@@ -39,6 +39,7 @@ instruction:
 
 expression:
 | n=INT { Int(n) }
+| 
 ;
 
 
@@ -46,13 +47,22 @@ expression:
 %inline binop:
   | PLUS  { Add } (* + *)
   | MUL   { Mul } (* * *)
-  | MINUS { Sub } (* - *)
+  | SUB { Sub } (* - *)
   | DIV   { Div } (* / *)
   | MOD   { Mod } (* mod *)
   | EQ    { Eq } (* == *)
   | NEQ   { Neq } (* != *)
   | LT    { Lt } (* < *)
   | LE    { Le } (* <= *)
+  | GT    { Gt } (* > *)
+  | GE    { Ge } (* >= *)
   | AND   { And } (* && *)
   | OR    { Or } (* || *)
+;
+
+
+
+%inline   unop: 
+| MINUS { Neg } 
+| NOT { Not } 
 ;
