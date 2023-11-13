@@ -10,6 +10,7 @@
 %token <string> IDENT
 %token <bool> BOOL
 %token TRUE FALSE
+%token DIV ADD
 %token VOID
 %token ATTRIBUTE VAR CLASS METHOD
 %token MAIN
@@ -34,5 +35,7 @@ instruction:
 ;
 
 expression:
-| n=INT { Int(n) }
+| n=INT                           { Int(n)  }
+| b=BOOL                          { Bool(b) }
+| e1=expression op=binop e2=expression { Binop( op, e1, e2) }
 ;

@@ -38,6 +38,9 @@ rule token = parse
   | "{"  { BEGIN }
   | "}"  { END }
 
+  | "/"  { DIV }
+  | "+"  { ADD }
+
   | "var " alpha
 
   | _    { raise (Error ("unknown character : " ^ lexeme lexbuf)) }
