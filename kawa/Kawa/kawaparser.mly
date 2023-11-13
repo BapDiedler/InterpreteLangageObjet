@@ -48,9 +48,9 @@ expression:
 %inline binop:
   | PLUS  { Add } (* + *)
   | MUL   { Mul } (* * *)
-  | MINUS { Sub } (* - *)
+  | SUB   { Sub } (* - *)
   | DIV   { Div } (* / *)
-  | MOD   { Mod } (* mod *)
+  | MOD   { Rem } (* mod *)
   | EQ    { Eq } (* == *)
   | NEQ   { Neq } (* != *)
   | LT    { Lt } (* < *)
