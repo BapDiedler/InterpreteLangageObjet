@@ -10,6 +10,21 @@
   List.iter (fun (s, k) -> Hashtbl.add h s k)
     [ "print",    PRINT;
       "main",     MAIN;
+      "return",   RETURN;
+      "new",      NEW;
+      "int",      INT;
+      "var",      VAR;
+      "void",     VOID;
+      "method",   METHOD;
+      "class",    CLASS;
+      "this",     THIS;
+      "attribute",ATTRIBUT;
+      "bool",     BOOL;
+      "true",     TRUE;
+      "false",    FALSE;
+      "if",       IF;
+      "else",     ELSE;
+      "while",    WHILE;
     ] ;
   fun s ->
     try  Hashtbl.find h s
@@ -37,6 +52,8 @@ rule token = parse
   | ")"  { RPAR }
   | "{"  { BEGIN }
   | "}"  { END }
+
+  | "var " alpha
 
   | _    { raise (Error ("unknown character : " ^ lexeme lexbuf)) }
   | eof  { EOF }
