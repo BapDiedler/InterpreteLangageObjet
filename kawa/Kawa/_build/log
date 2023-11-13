@@ -4,7 +4,7 @@
 # Workspace root:
 # /home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa
 # Auto-detected concurrency: 8
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_df569b_output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_084f1a_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -109,6 +109,8 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_df569b_output
 #      }
 #  }
 $ (cd _build/default && /home/baptistedie/.opam/default/bin/menhir --explain --dump kawaparser.mly --base kawaparser --infer-write-query kawaparser__mock.ml.mock)
-> File "kawaparser.mly", line 40, characters 19-24:
+> File "kawaparser.mly", line 43, characters 19-24:
 > Error: binop is undefined.
 [1]
+$ (cd _build/default && /usr/bin/ocamllex -q -o kawalexer.ml kawalexer.mll)
+$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl kawalexer.ml) > _build/default/.kawai.eobjs/dune__exe__Kawalexer.impl.d

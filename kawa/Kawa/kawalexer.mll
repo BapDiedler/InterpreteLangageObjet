@@ -42,7 +42,17 @@ rule token = parse
   | "+"  { ADD }
   | "-"  { SUB }
   | "*"  { MUL }
-  |
+  | "==" { EQU }
+  | "<"  { LT  }
+  | "<=" { LE  }
+  | ">"  { GT  }
+  | ">=" { GE  }
+
+  | "&&" { AND }
+  | "||" { OR  }
+  | "!"  { NOT }
+
+
 
   | "var " alpha
 

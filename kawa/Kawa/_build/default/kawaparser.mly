@@ -10,8 +10,11 @@
 %token <string> IDENT
 %token <bool> BOOL
 %token TRUE FALSE
-%token DIV ADD
 %token VOID
+%token ADD SUB MUL DIV EQU
+%token NOT OPP
+%token LT LE GT GE 
+%token AND OR 
 %token ATTRIBUTE VAR CLASS METHOD
 %token MAIN
 %token IF ELSE WHILE
