@@ -1,0 +1,854 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="Langages,%20interpr%C3%A9tation,%20compilation%20-%20DM%20-%20Kawa_files/style-tp.css">
+<title>
+  Langages, interprétation, compilation - DM - Kawa
+</title>
+<style type="text/css">
+h4 { text-align: left; float: none; width: auto;}
+table { align: center; table-layout: fixed; border-collapse: collapse; margin: 1em auto; }
+th { text-align: left; }
+td, th { padding: 0 1em; }
+tbody tr:nth-child(odd) { background-color: #cccccc; }
+</style>
+</head>
+
+<body>
+  <div id="global">
+    <div id="header">
+      <h1>Langages, interprétation, compilation<br>
+	DM - <tt>Kawa</tt>
+      </h1> 
+    </div>
+
+    <div id="content">
+
+      <p>
+        L'objectif de ce DM est de construire un interprète pour un petit
+        langage objet inspiré de Java.
+      </p>
+
+      <h2> Description du langage <tt>Kawa</tt> </h2>
+      <p>
+        Un programme <tt>Kawa</tt> est formé par une série de déclarations
+        de variables globales, suivie d'une série de définitions de classes,
+        suivie d'une bloc d'instruction principal à exécuter.
+      </p>
+
+      <p>
+        La déclaration d'une variable mentionne son type et son nom.
+</p><pre>  var int n;
+  var point p;
+</pre>
+        Un type peut être un type de base <tt>int</tt> ou <tt>bool</tt>,
+        ou un nom de classe.
+
+        La définition d'une classe comporte d'abord des déclarations
+        d'attributs, typés comme les variables, puis des définitions de 
+        méthodes. Chaque définition de méthode comporte un type de retour
+        (ou la mention spéciale <tt>void</tt> si la méthode ne renvoie rien),
+        une liste de paramètres et leurs types, et une séquence d'instructions
+        à exécuter.
+<pre> 
+  class point {
+    attribute int x;
+    attribute int y;
+
+    method void constructor(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    method int size() { return this.x+this.y; }
+  }
+</pre>
+Le bloc de code principal est placé entre accolades, après le mot-clé
+<tt>main</tt>.
+<pre>  main {
+    p = new point(1, 2);
+    p.x = p.x + p.y;
+    print(p.size());
+  }
+</pre>
+La construction d'un nouvel objet se fait avec l'opérateur <tt>new</tt>
+suivi d'un nom de classe, et éventuellement d'une séquence d'arguments
+entre parenthèses. Par défaut, les attributs de l'objet créé ne sont pas
+initialisés. Lorsque l'on fournit une liste d'arguments (fût-elle
+vide), la création de l'objet est suivie de l'appel de la méthode
+<tt>constructor</tt> de la classe concernée avec les arguments fournis,
+sur l'objet nouvellement créé.
+Note : dans ce cas, la méthode <tt>constructor</tt> doit exister, et
+son retour doit être <tt>void</tt>.
+<p></p>
+
+      <h2> Travail à réaliser (base) </h2>
+
+      <p>
+        Le DM est découpé en trois parties :
+        </p><ol>
+          <li> <a href="#syntaxe">analyse syntaxique</a>, </li>
+          <li> <a href="#types">vérification des types</a>, </li>
+          <li> <a href="#interprete">interprétation</a>, </li>
+        </ol>
+        auxquelles s'ajoutent des <a href="#extensions">extensions</a> 
+        optionnelles.
+      <p></p>
+      
+      <h3> Consignes </h3>
+
+      <p>
+        On fournit un <a href="https://www.lri.fr/~blsk/CompilationLDD3/kawa.zip">squelette de code</a> contenant
+        les éléments suivants.
+        <table>
+          <thead>
+            <tr><th>Fichier</th><th>Contenu</th><th>Commentaire</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><tt>kawa.ml</tt></td>
+              <td>syntaxe abstraite</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><tt>kawalexer.mll</tt></td>
+              <td>analyse lexicale</td>
+              <td>à compléter (ocamllex) </td>
+            </tr>
+            <tr>
+              <td><tt>kawaparser.mly</tt></td>
+              <td>analyse grammaticale</td>
+              <td>à compléter (menhir) </td>
+            </tr>
+<!--           
+            <tr>
+              <td><tt>kawapp.ml</tt></td>
+              <td>module d'affichage</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><tt>kawacat.ml</tt></td>
+              <td>programme intermédiaire</td>
+              <td></td>
+            </tr>
+-->
+            <tr>
+              <td><tt>typechecker.ml</tt></td>
+              <td>vérification des types</td>
+              <td>à compléter (caml) </td>
+            </tr>
+            <tr>
+              <td><tt>interpreter.ml</tt></td>
+              <td>interprétation</td>
+              <td>à compléter (caml) </td>
+            </tr>
+            <tr>
+              <td><tt>kawai.ml</tt></td>
+              <td>programme principal</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><tt>dune</tt>/<tt>dune-project</tt></td>
+              <td>configuration</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><tt>tests</tt></td>
+              <td>dossier de tests</td>
+              <td>à compléter (kawa) </td>
+            </tr>
+          </tbody>
+        </table>
+      </p>
+
+      <p>
+        Votre travail principal consiste à compléter les quatre fichiers
+        <tt>kawalexer.mll</tt>, <tt>kawaparser.mly</tt>,
+        <tt>typechecker.ml</tt> et <tt>interpreter.ml</tt>
+        en respectant les descriptions données dans la suite de cette page.
+        Vous obtiendrez alors avec le programme <tt>kawai</tt> un interprète
+        complet pour <tt>Kawa</tt>.
+        On s'attend à ce que vous ajoutiez également de nouveaux tests.
+      </p>
+
+      <p>
+        Vous pouvez inclure à votre projet autant d'extensions que vous le
+        souhaitez. Les extensions sont facultatives, mais si vous en réalisez
+        elles viendront renforcer votre note.
+      </p>
+
+      <p>
+        Vous pouvez travailler seul ou en binôme. Votre projet devra être
+        rendu à votre encadrant de TP. Joignez à votre projet un rapport
+        décrivant ce qui a été réalisé, ce qui fonctionne ou non, et les
+        difficultés que vous avez pu rencontrer. Le rapport doit également
+        détailler les éventuelles extensions que vous avez traitées.
+        Le rapport peut prendre la forme d'un simple fichier
+        <tt>README.txt</tt>.
+      </p>
+
+      <p>
+        Le squelette de code est conçu pour traiter correctement un programme
+        minimal. En plus de ces éléments, vous pouvez réutiliser sans 
+        limitations les fragments de code présentés dans le cours.
+        Attention en revanche : tout emprunt de code d'une autre source que le
+        cours doit être documenté dans votre rapport.
+      </p>
+
+      <h3> Recommandations </h3>
+
+      <p>
+        Votre progression dans ce projet peut se représenter sur deux axes :
+        </p><ol>
+          <li> les étapes successives du programme d'interprétation, qui
+            correspondent aux différents fichiers à compléter,</li>
+          <li> les différentes constructions du langage <tt>Kawa</tt>,
+            qui correspondent aux différents cas de chaque fonction 
+            principale. </li>
+        </ol>
+        Vous pouvez vous figurer un tableau à double entrée comme le suivant.
+        <table>
+          <thead>
+            <tr><th></th><th><tt>kawalexer</tt></th><th><tt>kawaparser</tt></th><th><tt>typechecker</tt></th><th><tt>interpreter</tt></th></tr>
+          </thead>
+          <tbody>
+            <tr><th>Arithmétique</th><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Variables</th><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Instructions</th><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Classes et attributs</th><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Méthodes</th><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Héritage</th><td></td><td></td><td></td><td></td></tr>
+        </tbody></table>
+        Vous pouvez organiser votre travail selon l'un ou l'autre de ces axes.
+        <ul>
+          <li>
+            En travaillant colonne par colonne, vous suivez les chapitres du
+            cours (et les sections de ce sujet), et vous complétez un fichier
+            avant de commencer le suivant.
+          </li><li>
+            En travaillant ligne par ligne, vous vous concentrez sur les
+            différents aspects du langage l'un après l'autre, et progressez
+            en parallèle dans les quatre fichiers.
+          </li>
+        </ul>
+        La deuxième stratégie a un avantage : elle permet de réaliser
+        rapidement des tests, en sélectionnant des programmes <tt>Kawa</tt>
+        contenant exactement les aspects traités.
+      <p></p>
+
+      <p>
+        Remarquez que dans l'étape intermédiaire où on a les classes et les
+        attributs, mais pas encore les méthodes, le langage ne permet de créer
+        un objet que d'une seule manière : avec un nom de classe mais pas
+        d'arguments.
+        </p><pre>  p = new point;</pre>
+        Les attributs sont alors systématiquement non initialisés.
+        Une fois les méthodes ajoutées en revanche, on peut inclure la création
+        d'objets initialisés par un constructeur.
+      <p></p>
+
+      <p>
+        Quelle que soit votre stratégie de progression, il est important de
+        tester votre programme à chaque étape avant de passer à la suivante.
+        </p><ul>
+<!--       
+          <li>
+            Le programme intermédiaire <tt>kawacat</tt> pourra vous servir à
+            tester votre analyse syntaxique. Il prend en entrée un nom de
+            fichier <tt>.kwa</tt>, fait l'analyse syntaxique du contenu de
+            ce fichier, et écrit dans un fichier <tt>.kwa.cat</tt> un
+            programme correspondant à l'AST produit par l'analyse.
+            L'afficheur utilise plus de parenthèses que nécessaire, pour que
+            vous puissiez observer certaines des priorités réalisées par votre 
+            analyseur.
+          </li>
+-->
+          <li>
+            Le programme principal <tt>kawai</tt> est un interprète
+            <tt>Kawa</tt>. Il prend en entrée un nom de fichier
+            <tt>.kwa</tt>, fait son analyse syntaxique, vérifie sa cohérence
+            de types, et l'interprète.
+          </li>
+          <li>
+            Le dossier <tt>tests</tt> contients quelques tests, à compléter
+            par les vôtres.
+          </li>
+        </ul>
+      <p></p>
+
+      <p>
+        L'ensemble du projet peut être résolu en 400 lignes de code environ,
+        avec quatre fichiers de tailles comparables.
+      </p>
+
+      <h2 id="syntaxe"> 1. Analyse syntaxique </h2>
+
+      <p> La première tâche consiste à réaliser l'analyse syntaxique d'un
+        programme et à produire l'arbre de syntaxe abstraite associé.
+        Vous devez pour cela compléter les fichiers
+        <tt>kawalexer.mll</tt> et <tt>kawaparser.mly</tt>.
+        Vous devez aussi expurger votre analyseur syntaxique de toutes ses
+        ambiguïtés (à l'aide de priorités).
+      </p>
+
+      <h3> Syntaxe concrète </h3>
+      <p>
+        La syntaxe concrète de <tt>Kawa</tt> est définie par les règles
+        suivantes (des explications de certaines notations viennent juste
+        après).
+</p><pre>   &lt;program&gt; ::= &lt;var_decl&gt;* &lt;class_def&gt;* &lt;main&gt; eof
+
+ &lt;class_def&gt; ::= class ident [extends ident]? { &lt;attr_decl&gt;* &lt;method_def&gt;* }
+
+  &lt;var_decl&gt; ::= var &lt;type&gt; ident ;
+ &lt;attr_decl&gt; ::= attribute &lt;type&gt; ident ;
+
+      &lt;type&gt; ::=  int 
+              |   bool
+              |   ident
+              |   void
+ 
+&lt;method_def&gt; ::= method &lt;type&gt; ident ( [&lt;type&gt; ident /,]* ) { &lt;var_decl&gt;* &lt;instr&gt;* }
+
+      &lt;expr&gt; ::=  n 
+              |   true 
+              |   false
+              |   this
+              |   &lt;mem&gt;
+              |   &lt;uop&gt; &lt;expr&gt;
+              |   &lt;expr&gt; &lt;bop&gt; &lt;expr&gt;
+              |   ( &lt;expr&gt; )
+              |   new ident
+              |   new ident ( [&lt;expr&gt; /,]* )
+              |   &lt;expr&gt; . ident ( [&lt;expr&gt; /,]* )
+
+       &lt;mem&gt; ::=  ident
+              |   &lt;expr&gt; . ident
+
+     &lt;instr&gt; ::=  print ( &lt;expr&gt; ) ;
+              |   &lt;mem&gt; = &lt;expr&gt; ;
+              |   if ( &lt;expr&gt; ) { &lt;instr&gt;* } else { &lt;instr&gt;* }
+              |   while ( &lt;expr&gt; ) { &lt;instr&gt;* }
+              |   return &lt;expr&gt; ;
+              |   &lt;expr&gt; ;
+         
+       &lt;uop&gt; ::=  -  |  !
+       &lt;bop&gt; ::=  +  |  -   |  *  |  /   |  %
+              |  ==  |  !=  |  &lt;  |  &lt;=  |  &amp;&amp;   |  ||
+</pre>
+      <p></p>
+
+      <p>
+        On prend comme symboles terminaux :
+        </p><ul>
+          <li> les constantes entières positives, désignées dans les règles
+            par <tt>n</tt>, </li>
+          <li> les identifiants alpha-numériques, désignés dans les
+            règles par <tt>ident</tt>,</li>
+          <li> les mots-clés <tt>true</tt>, <tt>false</tt>,
+            <tt>var</tt>, <tt>attribute</tt>, <tt>method</tt>,
+            <tt>class</tt>, <tt>new</tt>, <tt>this</tt>,
+            <tt>if</tt>, <tt>else</tt>, <tt>while</tt>,
+            <tt>return</tt>, <tt>print</tt>,
+            <tt>int</tt>, <tt>bool</tt>, <tt>void</tt>, </li>
+          <li> les symboles <tt>=</tt>, <tt>+</tt>, <tt>-</tt>, <tt>*</tt>, 
+            <tt>/</tt>, <tt>==</tt>, <tt>!=</tt>, <tt>&lt;</tt>, 
+            <tt>&lt;=</tt>, <tt>&amp;&amp;</tt>, <tt>||</tt>, <tt>(</tt>,
+            <tt>)</tt>, <tt>{</tt>, <tt>}</tt>, <tt>;</tt>, 
+            <tt>.</tt>, <tt>,</tt>, </li>
+          <li> un symbole spécial <tt>eof</tt> (fin de fichier) </li>
+        </ul>
+      <p></p>
+
+      <p>
+        On prend comme symboles non terminaux principaux :
+        </p><ul>
+          <li> <tt>&lt;program&gt;</tt> pour un programme complet </li>
+          <li> <tt>&lt;class_def&gt;</tt> et <tt>&lt;method_def&gt;</tt> les
+            définitions de classes et de méthodes </li>
+          <li> <tt>&lt;var_decl&gt;</tt> et <tt>&lt;attribute_decl&gt;</tt>
+            pour les déclarations de variables et d'attributs </li>
+          <li> <tt>&lt;type&gt;</tt> pour un type </li>
+          <li> <tt>&lt;expr&gt;</tt> pour une expression </li>
+          <li> <tt>&lt;mem&gt;</tt> pour un accès mémoire </li>
+          <li> <tt>&lt;instr&gt;</tt> pour une instruction </li>
+          <li> <tt>&lt;uop&gt;</tt> et <tt>&lt;bop&gt;</tt> pour les
+            opérateurs unaires et binaires </li>
+        </ul>
+        Vous pourrez en introduire d'autres en fonction des besoins, pour
+        reproduire les différents motifs de la grammaire.
+        Rappel : la notion d'« accès mémoire » sert ici à regrouper les accès
+        à une variable ou à un attribut d'un objet (que ce soit pour lecture
+        ou pour écriture).
+      <p></p>
+      
+      <p>
+        Dans les règles de grammaire, on adopte les notations supplémentaires
+        suivantes :
+        </p><ul>
+          <li> <tt>[m]?</tt>
+            pour désigner la présence optionnelle du motif <tt>m</tt> </li>
+          <li> <tt>[m]*</tt>
+            pour désigner une répétition éventuellement vide du motif <tt>m</tt> </li>
+          <li> <tt>[m/,]*</tt>
+            pour désigner une répétition éventuellement vide du motif, <tt>m</tt>,
+            où les occurrences sont séparées par <tt>,</tt> </li>
+        </ul>
+
+      <p>
+        En outre, on autorise des commentaires (non imbriqués) délimités par les
+        séquences <tt>/*</tt> et <tt>*/</tt>, ou par <tt>//</tt> et une fin de ligne.
+      </p>
+
+      <p>
+        On conserve toutes les conventions d'écriture et priorités des
+        opérateurs en vigueur dans les langages usuels (par exemple, en java).
+      </p>
+
+      <h3> Syntaxe abstraite </h3>
+
+      <p>
+        La syntaxe abstraite retranscrit directement la
+        plupart des constructions de la syntaxe concrète.
+        Elle est principalement définie par les types suivants :
+        </p><ul>
+          <li> <tt>program</tt> pour les programmes complets </li>
+          <li> <tt>class_def</tt> et <tt>method_def</tt> pour les définitions de
+            classes et de méthodes </li>
+          <li> <tt>expr</tt> et <tt>mem_access</tt> pour les expressions et accès </li>
+          <li> <tt>instr</tt> et <tt>seq</tt> pour les instructions et séquences </li>
+          <li> <tt>typ</tt> pour les types </li>
+        </ul>
+        Apparaissent également des types <tt>uop</tt> et <tt>bop</tt> qui
+        énumèrent les opérateurs.
+      <p></p>
+
+
+      <h2 id="types"> 2. Vérification des types </h2>
+
+      <p>Patience, on en parlera bientôt en cours.</p>
+
+<!--
+      <p>
+        La vérification des types en <tt>Mini-ML</tt> doit vérifier en
+        particulier que chaque expression est cohérente et que l'opération 
+        d'affectation <tt>s.x &lt;- e</tt> n'est appliquée qu'à des champs
+        qui sont effectivement mutables.
+        Elle doit produire une erreur dans les cas suivants :
+        <ul>
+          <li> expression incohérente, </li>
+          <li> référence à une variable inexistante, </li>
+          <li> référence à un nom de champ inexistant, </li>
+          <li> affectation à un champ immuable, </li>
+          <li> définition de deux types avec un nom de champ commun. </li>
+        </ul>
+      </p>
+
+      <h3> Mise en place </h3>
+        
+      <p>
+        Le fichier <tt>typeckecking.ml</tt> contient :
+        <ul>
+          <li> une fonction <tt>type_prog : prog -> unit</tt> qui
+            termine lorsque le programme donné en argument est correct,
+            et qui produit une erreur sinon, </li>
+          <li> une fonction <tt>type_expr</tt> qui prend en arguments une
+            expression et un environnement de typage, qui renvoie le type
+            de l'expression si celle-ci est correcte, et qui produit une
+            erreur sinon.
+          </li>
+        </ul>
+        Votre tâche consiste à compléter ces deux fonctions, en respectant
+        les règles de typage détaillées ci-dessous.
+      </p>
+
+      <h3> Règles de typage </h3>
+      <p>
+        Remarque : pour alléger l'écriture de ces règles, on y utilise autant
+        que possible la syntaxe concrète.
+      </p>
+
+<p>
+  Constantes, où <tt>n</tt> désigne une constante entière.
+<pre>
+  ------------    ----------------    -----------------    --------------
+  E |- n : int    E |- true : bool    E |- false : bool    E |- () : unit
+</pre>
+</p>
+
+<p>
+  Opérations unaires.
+<pre>
+  E |- e : int       E |- e : bool       
+  -------------    -----------------
+  E |- -e : int    E |- not e : bool  
+</pre>
+</p>
+
+<p>
+  Opérations binaires. Les opérations et comparaisons arithmétiques
+  travaillent sur des entiers. Le test d'égalité est polymorphe mais
+  demande des opérandes homogènes.
+<pre>
+  E |- e1 : int     E |- e2 : int      E |- e1 : int     E |- e2 : int
+  -------------------------------      -------------------------------
+        E |- e1 + e2 : int                  E |- e1 &lt; e2 : bool
+
+  E |- e1 : t     E |- e2 : t
+  ---------------------------
+     E |- e1 == e2 : bool
+</pre>
+</p>
+
+<p>
+  Variables.
+<pre>
+   E(x) = t       E |- e1 : t1     E, x:t1 |- e2 : t2
+  ----------      -----------------------------------
+  E |- x : t          E |- let x = e1 in e2 : t2
+</pre>
+</p>
+
+<p>
+  Expressions conditionnelles.
+<pre>
+  E |- e0 : bool     E |- e1 : t     E |- e2 : t
+  ----------------------------------------------
+         E |- if e0 then e1 else e2 : t
+</pre>
+</p>
+
+<p>
+  Fonctions, applications, point fixe. Le point fixe n'existant pas en
+  syntaxe concrète, on utilise pour lui la syntaxe abstraite.
+<pre>
+         E, x:t1 |- e : t2             E |- e1 : t2 -> t1     E |- e2 : t2
+  -------------------------------      -----------------------------------
+  E |- fun (x:t1) -> e : t1 -> t2                E |- e1 e2 : t1
+
+     E, x:t1 |- e : t2
+  -----------------------
+  E |- Fix(x, t1, e) : t2
+</pre>
+</p>
+
+<p>
+  Opérateur de séquence. On peut émettre un avertissement si <tt>t1</tt>
+  n'est pas <tt>unit</tt>.
+<pre>
+  E |- e1 : t1     E |- e2 : t2
+  -----------------------------
+        E |- e1 ; e2 : t2
+</pre>
+</p>
+
+<p>
+  Structures. On note <tt>s.x : t</tt> lorsque <tt>s</tt> est le nom d'un
+  type de structure avec un champ <tt>x</tt> de type <tt>t</tt>.
+<pre>
+  E |- e : s     s.x : t      E |- e1 : s     s.x : t mutable     E |- e2 : t
+  ----------------------      -----------------------------------------------
+       E |- e.x : t                       E |- e1.x &lt;- e2 : unit
+
+  s.x1 : t1     E |- e1 : t1     ...     s.xN : tN     E |- eN : tN
+  -----------------------------------------------------------------
+                E |- { x1 = e1; ...; xN = eN; } : s
+</pre>
+</p>
+-->
+      
+      <h2 id="interprete"> 3. Interprétation </h2>
+
+      <p>
+        L'interprétation d'un programme <tt>Kawa</tt> doit exécuter la
+        séquence d'instructions principale. À mesure de cette exécution,
+        il faudra créer ou modifier des objets en mémoire, et afficher
+        des valeurs.
+      </p>
+
+      <p>
+        L'évaluation d'une expression produite une valeur de l'une des
+        quatre sortes suivantes :
+        </p><ul>
+          <li> constante entière, </li>
+          <li> constante booléenne, </li>
+          <li> constante <tt>null</tt> (lorsqu'une valeur est indéfinie), </li>
+          <li> objet. </li>
+        </ul>
+        Un objet est composé d'un nom de classe, et d'une table donnant une
+        valeur (éventuellement <tt>null</tt>) à chaque attribut.
+      <p></p>
+
+      <h3> Mise en place </h3>
+
+      <p>
+        Le fichier <tt>interpreter.ml</tt> contient un fragment d'interprète,
+        que vous devez compléter. Vous y trouverez en particulier :
+        </p><ul>
+          <li> une fonction <tt>exec_prog</tt>, qui prend en paramètre un
+            programme <tt>Kawa</tt> et l'exécute, </li>
+          <li> une fonction <tt>eval_seq</tt>, qui exécute une séquence
+            d'instructions, </li>
+          <li> une fonction <tt>eval_call</tt>, qui évalue un appel de
+            méthode. </li>
+        </ul>
+        Les fonctions <tt>eval_seq</tt> et <tt>eval_call</tt> accèdent toutes
+        les deux à un environnement global <tt>env</tt> mutable, qui associe
+        une valeur à chaque variable gloable et est mis à jour lors des
+        opérations d'affectation.
+        En outre, <tt>eval_seq</tt> utilise un environnement local 
+        <tt>lenv</tt>, mutable également, qui associe une valeur à chaque
+        paramètre de fonction et chaque variable locale de l'appel en cours.
+      <p></p>
+
+      <p>
+        Le fragment de code fourni fait les choix techniques suivants.
+        </p><ul>
+          <li> L'environnement local et l'environnement global sont réalisés
+            par des tables de hachage, dont les clés sont les identifiants des
+            variables et des paramètres. À chaque clé, la table associe une
+            valeur, qui est <tt>null</tt> pour une variable non initialisée.
+          </li>
+          <li> Chaque objet est représenté un record caml avec deux champs :
+            le premier est le nom de la classe à laquelle appartient l'objet,
+            le deuxième est une table de hachage dont les clés sont les noms
+            des attributs, et qui donne la valeur associée à chacun.
+          </li>
+        </ul>
+        Vous avez le droit de modifier ces choix techniques si vous préférez
+        un style différent.
+      <p></p>
+
+      <h3> Sémantique </h3>
+
+      <p>
+        L'interprétation doit suivre les principes suivants.
+      </p>
+
+      <p> Valeurs et opérations de base.
+        </p><ul>
+          <li> Les constantes, entières ou booléennes, sont leur
+            propre valeur. </li>
+          <li> La valeur <tt>null</tt> caractérise les variables ou attributs
+            non initialisés, et le résultat d'une fonction <tt>void</tt>. </li>
+          <li> Les opérations et comparaisons arithmétiques ont leur
+            signification habituelle. L'ordre d'évaluation des opérandes d'une
+            opération binaire n'est généralement pas spécifié. </li>
+          <li> Rappel : les opérations <tt>&amp;&amp;</tt> et <tt>||</tt>
+            sont paresseuses. Elles évaluent en premier leur opérande de
+            gauche, et n'évaluent celui de droite que si nécessaire. </li>
+          <li> Les opérations <tt>==</tt> et <tt>!=</tt> testent l'égalité
+            physique de leurs opérandes. Elles obéissent aux critères
+            suivants :
+            <ul>
+              <li> chaque constante est égale à elle-même, </li>
+              <li> deux objets sont égaux si el seulement s'ils sont
+                physiquement le même objet, </li>
+              <li> des valeurs de natures différentes ne sont jamais
+                égales. </li>
+            </ul>
+          </li>
+        </ul>
+      <p></p>
+
+      <p>
+        Classes et objets.
+        </p><ul>
+          <li> Une définition de classe définit un type et des méthodes.
+            L'ensemble des classes définies dans un programme est inclus dans
+            le contexte de l'interprète. </li>
+          <li> Chaque classe hérite optionnellement d'une autre classe appelée
+            sont parent. Elle en reprend alors les déclarations d'attributs et
+            les définitions de méthodes. </li>
+          <li> L'opération <tt>new</tt> appliquée uniquement à un nom de
+            classe <tt>cn</tt> crée un nouvel objet de la classe <tt>cn</tt>,
+            et renvoie cet objet. Les attributs de l'instance créée ne sont
+            pas initialisés (leur consultation doit renvoyer <tt>null</tt>).
+          </li><li> L'opération <tt>new</tt> appliquée à un nom de classe <tt>cn</tt>
+            et une séquence de paramètre <tt>(e1, ..., eK)</tt> crée d'abord un
+            nouvel objet de classe <tt>cn</tt> comme ci-dessus, puis appelle
+            sur cet objet la méthode <tt>constructor</tt> de la classe
+            <tt>cn</tt>. À nouveau, le résultat est l'instance créée.
+        </li></ul>
+      <p></p>
+            
+      <p>
+        Variables et attributs.
+        </p><ul>
+          <li> Les variables sont mutables, de même que les attributs
+            des objets. </li>
+          <li> Une variable globale déclarée au début du programme est
+            visible dans tout le code du programme. Une variable locale
+            décrite au début d'une méthode est visible exclusivement
+            dans le code de cette méthode, et y masque une éventuelle
+            variable globale de même nom. </li>
+          <li> Un accès <tt>e.x</tt> suppose que la valeur de <tt>e</tt>
+            est un objet dont la classe (ou une classe parente) possède
+            un attribut de nom <tt>x</tt>. Lors d'un accès en écriture,
+            la valeur de cet attribut doit être modifiée. </li>
+        </ul>
+      <p></p>
+
+     <p>
+        Méthodes.
+        </p><ul>
+          <li> L'évaluation d'un appel de méthode <tt>e.f(e1, ..., eK)</tt>
+            suppose que la valeur de l'expression <tt>e</tt> est un objet,
+            appartenant à une classe qui définit (ou hérite d')une méthode
+            <tt>f</tt>. Pour choisir la méthode appelée, on cherche d'abord
+            dans la classe de <tt>e</tt> elle-même, puis dans son éventuel
+            parent, et ainsi de suite en remontant jusqu'à trouver une
+            méthode du nom <tt>f</tt> demandé. C'est cette dernière qui est
+            appelée, avec les paramètres explicites <tt>e1</tt> à <tt>eK</tt>.
+            L'objet donné par <tt>e</tt> est également accessible durant
+            l'évaluation de la méthode en tant que paramètre implicite
+            (désigné par <tt>this</tt>).
+          </li><li> Dans un appel de méthode <tt>e.f(e1, ..., eK)</tt>, l'ordre
+            d'évaluation des expressions <tt>e</tt>, <tt>e1</tt>, ...,
+            <tt>eK</tt> n'est pas spécifié. </li>
+        </ul>
+      <p></p>
+
+
+
+      <h2 id="extensions"> Extensions </h2>
+
+      <p>Patience ici aussi (vous avez vraiment déjà fini le reste ?).</p>
+
+<!--
+      <p>
+        Voici une liste de suggestions d'extensions, concernant différents
+        aspect de votre interprète. Cette liste n'est pas limitative.
+      </p>
+
+      <h3> Extensions du langages </h3>
+-->
+
+<!--
+      <h4> Extension du langage : références </h4>
+      <p>
+        Ajoutez à la syntaxe du langage les opérateurs
+        <tt>ref</tt>, <tt>!</tt> et <tt>:=</tt> tels qu'ils existent en caml,
+        ainsi que le type <tt>ref</tt> associé.
+      </p>
+
+      <p>
+        <i>Note :</i> aucun de ces éléments ne nécessite d'étendre la syntaxe
+        abstraite. En caml, le type <tt>'a ref</tt> n'est rien d'autre qu'une
+        notation pour la structure <tt>{ mutable contents : 'a }</tt>.
+      </p>
+-->
+
+<!--
+      <h4> Argument <tt>()</tt> </h4>
+      <p>
+        Étendre le langage pour permettre des définitions de fonctions de la
+        forme <tt>fun () -> e</tt> ou <tt>let f () = e1 in e2</tt>, dans
+        lesquelles l'argument est de type <tt>unit</tt> et n'est pas nommé.
+      </p>
+      
+      <h4> Tableaux </h4>
+      <p>
+        Ajoutez au langage la possibilité de manipuler des tableaux homogènes
+        (c'est-à-dire, dont tous les éléments sont du même type).
+        Vous avez besoin :
+        <ul>
+          <li> d'un type pour les tableaux homogènes </li>
+          <li> d'au moins une opération de création d'un tableau </li>
+          <li> d'opérations d'accès en lecture et en écriture </li>
+        </ul>
+      </p>
+
+      <h4> Égalité structurelle </h4>
+      <p>
+        Ajoutez au langage l'opérateur <tt>=</tt> d'égalité structurelle
+        et sa négation <tt>&lt;&gt;</tt>.
+        L'égalité structurelle répond aux critères suivants :
+        <ul>
+          <li> chaque constante est égale à elle-même, </li>
+          <li> deux structures sont égales si et seulement si elles sont
+            du même type et ont pour chaque champ des valeurs structurellement
+            égales, </li>
+          <li> la comparaison de deux fonctions produit une erreur, </li>
+          <li> des valeurs de types différents ne sont pas comparables. </li>
+        </ul>
+      </p>
+
+      <h4> Types énumérés </h4>
+      <p>
+        Ajoutez au langage la possibilité de définir des types énumérés,
+        comme
+<pre>
+  type couleur =
+    | Pique 
+    | Coeur
+    | Carreau
+    | Trefle
+</pre>
+Vous pouvez optionnellement inclure une opération de sélection 
+<tt>match</tt>/<tt>with</tt> associée (techniquement elle n'est pas
+indispensable, car un tel type peut aussi être manipulé avec des <tt>if</tt>).
+      </p>
+
+      <h4> Types algébriques </h4>
+      <p>
+        Ajoutez au langage la possibilité pour l'utilisateur de définir des
+        types algébriques, comme
+<pre>
+  type list =
+    | Nil
+    | Cons of int * list
+</pre>
+et une opération de filtrage <tt>match</tt>/<tt>with</tt>.
+Différence avec l'extension précédente : les constructeurs peuvent recevoir
+des arguments, et l'opération de filtrage devient incontournable.
+      </p>
+
+      <p>
+        Cette extension a quelques ramifications, que vous pouvez inclure ou
+        non. Par exemple :
+        <ul>
+          <li> motif de filtrage joker (<tt>_</tt>), </li>
+          <li> motifs de filtrage composés, comme 
+            <tt>Cons(x, Cons(y, l))</tt>. </li>
+        </ul>
+      </p>
+
+      <h3> Raffinements de l'analyse </h3>
+
+      <h4> "Missing semicolon" </h4>
+      <p>
+        Faites que votre analyseur produise des messages d'erreurs
+        spécifiques pour certaines erreurs de syntaxe fréquentes.
+      </p>
+
+      <h4> "Did you mean 'recursion'?"</h4>
+      <p>
+        Lorsque le programme tente d'accéder à un identifiant
+        inexistant, produire un message d'erreur proposant un
+        identifiant ressemblant, s'il en existe.
+      </p>
+
+      <h4> Inférence de types </h4>
+      <p>
+        Retirer les annotations de types du langage, et 
+        remplacer la vérification des types par de l'inférence.<br/>
+        <i>Note : on ne parle pas forcément de polymorphisme. Il faut
+          en revanche générer des contraintes et les résoudres.</i>
+      </p>
+
+      <h3> Améliorations </h3>
+
+      <h4> Amélioration de l'afficheur </h4>
+      <p>
+        Modifiez l'afficheur pour que le fichier produit soit aussi
+        naturel que possible.
+      </p>
+
+-->
+
+    </div>
+  </div>
+  
+
+
+</body></html>
