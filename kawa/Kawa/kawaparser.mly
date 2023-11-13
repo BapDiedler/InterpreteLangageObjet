@@ -40,3 +40,19 @@ instruction:
 expression:
 | n=INT { Int(n) }
 ;
+
+
+
+%inline binop:
+  | PLUS  { Add } (* + *)
+  | MUL   { Mul } (* * *)
+  | MINUS { Sub } (* - *)
+  | DIV   { Div } (* / *)
+  | MOD   { Mod } (* mod *)
+  | EQ    { Eq } (* == *)
+  | NEQ   { Neq } (* != *)
+  | LT    { Lt } (* < *)
+  | LE    { Le } (* <= *)
+  | AND   { And } (* && *)
+  | OR    { Or } (* || *)
+;
