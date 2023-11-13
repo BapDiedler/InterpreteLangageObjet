@@ -38,7 +38,23 @@ instruction:
 ;
 
 expression:
-| n=INT                           { Int(n)  }
-| b=BOOL                          { Bool(b) }
-| e1=expression op=binop e2=expression { Binop( op, e1, e2) }
+| n=INT { Int(n) }
+| b=BOOL{ Bool(b)}
+| e1=expression op=binop e2=expression { Binop(op,e1,e2) }
+;
+
+
+
+%inline binop:
+  | PLUS  { Add } (* + *)
+  | MUL   { Mul } (* * *)
+  | MINUS { Sub } (* - *)
+  | DIV   { Div } (* / *)
+  | MOD   { Mod } (* mod *)
+  | EQ    { Eq } (* == *)
+  | NEQ   { Neq } (* != *)
+  | LT    { Lt } (* < *)
+  | LE    { Le } (* <= *)
+  | AND   { And } (* && *)
+  | OR    { Or } (* || *)
 ;
