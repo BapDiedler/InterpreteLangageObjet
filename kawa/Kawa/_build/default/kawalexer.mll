@@ -38,6 +38,22 @@ rule token = parse
   | "{"  { BEGIN }
   | "}"  { END }
 
+  | "/"  { DIV }
+  | "+"  { ADD }
+  | "-"  { SUB }
+  | "*"  { MUL }
+  | "==" { EQU }
+  | "<"  { LT  }
+  | "<=" { LE  }
+  | ">"  { GT  }
+  | ">=" { GE  }
+
+  | "&&" { AND }
+  | "||" { OR  }
+  | "!"  { NOT }
+
+
+
   | "var " alpha
 
   | _    { raise (Error ("unknown character : " ^ lexeme lexbuf)) }

@@ -11,6 +11,10 @@
 %token <bool> BOOL
 %token TRUE FALSE
 %token VOID
+%token ADD SUB MUL DIV EQU
+%token NOT OPP
+%token LT LE GT GE 
+%token AND OR 
 %token ATTRIBUTE VAR CLASS METHOD
 %token MAIN
 %token IF ELSE WHILE
@@ -34,5 +38,7 @@ instruction:
 ;
 
 expression:
-| n=INT { Int(n) }
+| n=INT                           { Int(n)  }
+| b=BOOL                          { Bool(b) }
+| e1=expression op=binop e2=expression { Binop( op, e1, e2) }
 ;

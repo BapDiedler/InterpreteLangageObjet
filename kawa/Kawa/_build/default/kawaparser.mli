@@ -22,6 +22,7 @@ type token =
   | EOF
   | END
   | ELSE
+  | DIV
   | CLASS
   | BOOL of (bool)
   | BEGIN

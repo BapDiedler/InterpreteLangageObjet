@@ -4,7 +4,7 @@
 # Workspace root:
 # /home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa
 # Auto-detected concurrency: 8
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_928830_output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_084f1a_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -109,44 +109,8 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_928830_output
 #      }
 #  }
 $ (cd _build/default && /home/baptistedie/.opam/default/bin/menhir --explain --dump kawaparser.mly --base kawaparser --infer-write-query kawaparser__mock.ml.mock)
-> File "kawaparser.mly", line 14, characters 7-16:
-> Warning: the token ATTRIBUTE is unused.
-> File "kawaparser.mly", line 11, characters 14-18:
-> Warning: the token BOOL is unused.
-> File "kawaparser.mly", line 14, characters 21-26:
-> Warning: the token CLASS is unused.
-> File "kawaparser.mly", line 16, characters 10-14:
-> Warning: the token ELSE is unused.
-> File "kawaparser.mly", line 12, characters 12-17:
-> Warning: the token FALSE is unused.
-> File "kawaparser.mly", line 10, characters 16-21:
-> Warning: the token IDENT is unused.
-> File "kawaparser.mly", line 16, characters 7-9:
-> Warning: the token IF is unused.
-> File "kawaparser.mly", line 14, characters 27-33:
-> Warning: the token METHOD is unused.
-> File "kawaparser.mly", line 18, characters 20-23:
-> Warning: the token NEW is unused.
-> File "kawaparser.mly", line 8, characters 7-11:
-> Warning: the token THIS is unused.
-> File "kawaparser.mly", line 12, characters 7-11:
-> Warning: the token TRUE is unused.
-> File "kawaparser.mly", line 14, characters 17-20:
-> Warning: the token VAR is unused.
-> File "kawaparser.mly", line 13, characters 7-11:
-> Warning: the token VOID is unused.
-> File "kawaparser.mly", line 16, characters 15-20:
-> Warning: the token WHILE is unused.
-$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl kawaparser__mock.ml.mock) > _build/default/.kawai.eobjs/kawaparser__mock.impl.d
-$ (cd _build/.sandbox/b37c7ee88d49051a3069884256e2d5a3/default && /usr/bin/ocamlc.opt -g -I .kawai.eobjs/byte -open Dune__exe -short-paths -i -impl kawaparser__mock.ml.mock) > _build/.sandbox/b37c7ee88d49051a3069884256e2d5a3/default/kawaparser__mock.mli.inferred
-$ (cd _build/default && /home/baptistedie/.opam/default/bin/menhir --explain --dump kawaparser.mly --base kawaparser --infer-read-reply kawaparser__mock.mli.inferred)
-$ (cd _build/default && /usr/bin/ocamldep.opt -modules -intf kawaparser.mli) > _build/default/.kawai.eobjs/dune__exe__Kawaparser.intf.d
-$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl kawaparser.ml) > _build/default/.kawai.eobjs/dune__exe__Kawaparser.impl.d
-$ (cd _build/default && /usr/bin/ocamlc.opt -g -bin-annot -I .kawai.eobjs/byte -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/byte/dune__exe__Kawaparser.cmi -c -intf kawaparser.mli)
-$ (cd _build/default && /usr/bin/ocamlc.opt -g -bin-annot -I .kawai.eobjs/byte -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/byte/dune__exe__Kawalexer.cmo -c -impl kawalexer.ml)
-$ (cd _build/default && /usr/bin/ocamlc.opt -g -bin-annot -I .kawai.eobjs/byte -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/byte/dune__exe__Kawai.cmo -c -impl kawai.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -g -I .kawai.eobjs/byte -I .kawai.eobjs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/native/dune__exe__Kawaparser.cmx -c -impl kawaparser.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -g -I .kawai.eobjs/byte -I .kawai.eobjs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/native/dune__exe__Kawalexer.cmx -c -impl kawalexer.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -g -I .kawai.eobjs/byte -I .kawai.eobjs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o .kawai.eobjs/native/dune__exe__Kawai.cmx -c -impl kawai.ml)
-$ (cd _build/default && /usr/bin/ocamlopt.opt -g -o kawai.exe .kawai.eobjs/native/dune__exe.cmx .kawai.eobjs/native/dune__exe__Kawa.cmx .kawai.eobjs/native/dune__exe__Interpreter.cmx .kawai.eobjs/native/dune__exe__Kawaparser.cmx .kawai.eobjs/native/dune__exe__Kawalexer.cmx .kawai.eobjs/native/dune__exe__Kawai.cmx)
-# Promoting "_build/default/kawai.exe" to "kawai.exe"
+> File "kawaparser.mly", line 43, characters 19-24:
+> Error: binop is undefined.
+[1]
+$ (cd _build/default && /usr/bin/ocamllex -q -o kawalexer.ml kawalexer.mll)
+$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl kawalexer.ml) > _build/default/.kawai.eobjs/dune__exe__Kawalexer.impl.d
