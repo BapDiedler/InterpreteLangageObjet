@@ -41,6 +41,7 @@ rule token = parse
   | "/"  { DIV }
   | "+"  { ADD }
   | number+ [' ']* "-"  { SUB }
+  | "-"  { MINUS }
   | "*"  { MUL }
   | "%"  { MOD }
   | "!=" { NEQ }
@@ -53,7 +54,6 @@ rule token = parse
   | "&&" { AND }
   | "||" { OR  }
   | "!"  { NOT }
-  | "-"  { MINUS }
 
 
 

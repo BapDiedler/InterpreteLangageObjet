@@ -2,9 +2,9 @@
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root:
-# /home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa
-# Auto-detected concurrency: 8
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_084f1a_output
+# /home/karim/magistere/Compilation/Projet/InterpreteLangageObjet/kawa/Kawa
+# Auto-detected concurrency: 6
+$ /home/karim/.opam/5.0.0/bin/ocamlc.opt -config > /tmp/dune_788d70_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -13,70 +13,64 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_084f1a_output
 #  ; for_host = None
 #  ; fdo_target_exe = None
 #  ; build_dir = In_build_dir "default"
-#  ; ocaml_bin = External "/usr/bin"
-#  ; ocaml = Ok External "/usr/bin/ocaml"
-#  ; ocamlc = External "/usr/bin/ocamlc.opt"
-#  ; ocamlopt = Ok External "/usr/bin/ocamlopt.opt"
-#  ; ocamldep = Ok External "/usr/bin/ocamldep.opt"
-#  ; ocamlmklib = Ok External "/usr/bin/ocamlmklib.opt"
-#  ; env =
+#  ; ocaml_bin = External "/home/karim/.opam/5.0.0/bin"
+#  ; ocaml = Ok External "/home/karim/.opam/5.0.0/bin/ocaml"
+#  ; ocamlc = External "/home/karim/.opam/5.0.0/bin/ocamlc.opt"
+#  ; ocamlopt = Ok External "/home/karim/.opam/5.0.0/bin/ocamlopt.opt"
+#  ; ocamldep = Ok External "/home/karim/.opam/5.0.0/bin/ocamldep.opt"
+#  ; ocamlmklib = Ok External "/home/karim/.opam/5.0.0/bin/ocamlmklib.opt"
+#  ; installed_env =
 #      map
-#        { "DUNE_OCAML_HARDCODED" : "/home/baptistedie/.opam/default/lib"
-#        ; "DUNE_OCAML_STDLIB" : "/usr/lib/ocaml"
-#        ; "DUNE_SOURCEROOT" :
-#            "/home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa"
-#        ; "INSIDE_DUNE" :
-#            "/home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa/_build/default"
-#        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "/home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa/_build/install/default/lib"
-#        ; "OCAMLPATH" :
-#            "/home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa/_build/install/default/lib"
-#        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "/home/baptistedie/Etud/cours_fst/5/Compilation/InterpreteLangageObjet/kawa/Kawa/_build/install/default/lib/toplevel"
+#        { "INSIDE_DUNE" :
+#            "/home/karim/magistere/Compilation/Projet/InterpreteLangageObjet/kawa/Kawa/_build/default"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
-#  ; findlib_paths = [ External "/home/baptistedie/.opam/default/lib" ]
-#  ; natdynlink_supported = true
-#  ; supports_shared_libraries = true
+#  ; findlib_paths =
+#      [ External "/home/karim/.opam/5.0.0/lib/ocaml"
+#      ; External "/home/karim/.opam/5.0.0/lib"
+#      ]
 #  ; ocaml_config =
-#      { version = "4.08.1"
-#      ; standard_library_default = "/usr/lib/ocaml"
-#      ; standard_library = "/usr/lib/ocaml"
+#      { version = "5.0.0"
+#      ; standard_library_default = "/home/karim/.opam/5.0.0/lib/ocaml"
+#      ; standard_library = "/home/karim/.opam/5.0.0/lib/ocaml"
 #      ; standard_runtime = "the_standard_runtime_variable_was_deleted"
 #      ; ccomp_type = "cc"
-#      ; c_compiler = "x86_64-linux-gnu-gcc"
-#      ; ocamlc_cflags = [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-fPIC" ]
-#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64"; "-D_REENTRANT" ]
-#      ; ocamlopt_cflags = [ "-O2"; "-fno-strict-aliasing"; "-fwrapv" ]
-#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64"; "-D_REENTRANT" ]
+#      ; c_compiler = "gcc"
+#      ; ocamlc_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
+#      ; ocamlopt_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
 #      ; bytecomp_c_compiler =
-#          [ "x86_64-linux-gnu-gcc"
+#          [ "gcc"
 #          ; "-O2"
 #          ; "-fno-strict-aliasing"
 #          ; "-fwrapv"
+#          ; "-pthread"
 #          ; "-fPIC"
 #          ; "-D_FILE_OFFSET_BITS=64"
-#          ; "-D_REENTRANT"
 #          ]
-#      ; bytecomp_c_libraries = [ "-lm"; "-ldl"; "-lpthread" ]
+#      ; bytecomp_c_libraries = [ "-lm"; "-lpthread" ]
 #      ; native_c_compiler =
-#          [ "x86_64-linux-gnu-gcc"
+#          [ "gcc"
 #          ; "-O2"
 #          ; "-fno-strict-aliasing"
 #          ; "-fwrapv"
+#          ; "-pthread"
+#          ; "-fPIC"
 #          ; "-D_FILE_OFFSET_BITS=64"
-#          ; "-D_REENTRANT"
 #          ]
-#      ; native_c_libraries = [ "-lm"; "-ldl" ]
-#      ; native_pack_linker = [ "x86_64-linux-gnu-ld"; "-r"; "-o" ]
-#      ; cc_profile = [ "-pg" ]
+#      ; native_c_libraries = [ "-lm"; "-lpthread" ]
+#      ; native_pack_linker = [ "ld"; "-r"; "-o" ]
+#      ; cc_profile = []
 #      ; architecture = "amd64"
 #      ; model = "default"
 #      ; int_size = 63
 #      ; word_size = 64
 #      ; system = "linux"
-#      ; asm = [ "x86_64-linux-gnu-as" ]
+#      ; asm = [ "as" ]
 #      ; asm_cfi_supported = true
 #      ; with_frame_pointers = false
 #      ; ext_exe = ""
@@ -89,28 +83,29 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_084f1a_output
 #      ; systhread_supported = true
 #      ; host = "x86_64-pc-linux-gnu"
 #      ; target = "x86_64-pc-linux-gnu"
-#      ; profiling = true
+#      ; profiling = false
 #      ; flambda = false
 #      ; spacetime = false
-#      ; safe_string = false
-#      ; exec_magic_number = "Caml1999X025"
-#      ; cmi_magic_number = "Caml1999I025"
-#      ; cmo_magic_number = "Caml1999O025"
-#      ; cma_magic_number = "Caml1999A025"
-#      ; cmx_magic_number = "Caml1999Y025"
-#      ; cmxa_magic_number = "Caml1999Z025"
-#      ; ast_impl_magic_number = "Caml1999M025"
-#      ; ast_intf_magic_number = "Caml1999N025"
-#      ; cmxs_magic_number = "Caml1999D025"
-#      ; cmt_magic_number = "Caml1999T025"
+#      ; safe_string = true
+#      ; exec_magic_number = "Caml1999X032"
+#      ; cmi_magic_number = "Caml1999I032"
+#      ; cmo_magic_number = "Caml1999O032"
+#      ; cma_magic_number = "Caml1999A032"
+#      ; cmx_magic_number = "Caml1999Y032"
+#      ; cmxa_magic_number = "Caml1999Z032"
+#      ; ast_impl_magic_number = "Caml1999M032"
+#      ; ast_intf_magic_number = "Caml1999N032"
+#      ; cmxs_magic_number = "Caml1999D032"
+#      ; cmt_magic_number = "Caml1999T032"
 #      ; natdynlink_supported = true
 #      ; supports_shared_libraries = true
 #      ; windows_unicode = false
 #      }
+#  ; instrument_with = []
 #  }
-$ (cd _build/default && /home/baptistedie/.opam/default/bin/menhir --explain --dump kawaparser.mly --base kawaparser --infer-write-query kawaparser__mock.ml.mock)
-> File "kawaparser.mly", line 43, characters 19-24:
-> Error: binop is undefined.
+$ (cd _build/default && /home/karim/.opam/5.0.0/bin/ocamllex -q -o kawalexer.ml kawalexer.mll)
+$ (cd _build/default && /home/karim/.opam/5.0.0/bin/menhir --explain --dump kawaparser.mly --base kawaparser --infer-write-query kawaparser__mock.ml.mock)
+> File "kawaparser.mly", line 68, characters 2-7:
+> Error: MINUS is undefined.
 [1]
-$ (cd _build/default && /usr/bin/ocamllex -q -o kawalexer.ml kawalexer.mll)
-$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl kawalexer.ml) > _build/default/.kawai.eobjs/dune__exe__Kawalexer.impl.d
+$ (cd _build/default && /home/karim/.opam/5.0.0/bin/ocamldep.opt -modules -impl kawalexer.ml) > _build/default/.kawai.eobjs/dune__exe__Kawalexer.impl.d

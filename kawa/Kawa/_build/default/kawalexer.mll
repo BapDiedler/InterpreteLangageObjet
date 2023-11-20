@@ -40,8 +40,11 @@ rule token = parse
 
   | "/"  { DIV }
   | "+"  { ADD }
-  | "-"  { SUB }
+  | number+ [' ']* "-"  { SUB }
+  | "-"  { MINUS }
   | "*"  { MUL }
+  | "%"  { MOD }
+  | "!=" { NEQ }
   | "==" { EQU }
   | "<"  { LT  }
   | "<=" { LE  }

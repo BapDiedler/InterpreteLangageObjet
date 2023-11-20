@@ -41,17 +41,18 @@ expression:
 | n=INT { Int(n) } 
 | b=BOOL{ Bool(b)}
 | e1=expression op=binop e2=expression { Binop(op,e1,e2) }
+| up=unop e1=expression {Unop(up,e1)}
 ;
 
 
 
 %inline binop:
-  | PLUS  { Add } (* + *)
+  | ADD  { Add } (* + *)
   | MUL   { Mul } (* * *)
   | SUB { Sub } (* - *)
   | DIV   { Div } (* / *)
   | MOD   { Rem } (* mod *)
-  | EQ    { Eq } (* == *)
+  | EQU    { Eq } (* == *)
   | NEQ   { Neq } (* != *)
   | LT    { Lt } (* < *)
   | LE    { Le } (* <= *)
