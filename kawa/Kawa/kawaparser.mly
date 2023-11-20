@@ -38,13 +38,9 @@ instruction:
 ;
 
 expression:
-| n=INT { Int(n) }
-<<<<<<< HEAD
-| 
-=======
+| n=INT { Int(n) } 
 | b=BOOL{ Bool(b)}
 | e1=expression op=binop e2=expression { Binop(op,e1,e2) }
->>>>>>> 3c73993d96f5960cf81de357631f149e382d36eb
 ;
 
 
@@ -52,11 +48,7 @@ expression:
 %inline binop:
   | PLUS  { Add } (* + *)
   | MUL   { Mul } (* * *)
-<<<<<<< HEAD
   | SUB { Sub } (* - *)
-=======
-  | SUB   { Sub } (* - *)
->>>>>>> 3c73993d96f5960cf81de357631f149e382d36eb
   | DIV   { Div } (* / *)
   | MOD   { Rem } (* mod *)
   | EQ    { Eq } (* == *)
