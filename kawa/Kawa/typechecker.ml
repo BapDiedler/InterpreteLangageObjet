@@ -34,4 +34,13 @@ let typecheck_prog p =
     List.iter (fun i -> check_instr i ret tenv) s
   in
 
+  let find_class cn =
+    List.find (fun cdef -> idef.class_name (*voir kawa.ml*) = cn) p.classes 
+  in
+
+  let subclass t1 t2 = failwith "To Do" (*vérifier que t1 est une ss classe de t2*)
+  in
+
+
+
   check_seq p.main TVoid tenv
